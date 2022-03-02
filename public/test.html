@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .pink-box {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      background-color: pink;
+    }
+
+    body {
+      height: 1000px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="pink-box">
+    <button id="btn">提交</button>
+
+  </div>
+  <script>
+    let btn = document.querySelector('#btn')
+    // 防抖  在规定时间内触发有限次
+    // 简单的防抖动函数
+    function debounce(func, wait, immediate) {
+      // 定时器变量
+      var timeout = null;
+      return function () {
+        let firsttime = !timeout
+        // 每次触发 scroll handler 时先清除定时器
+        clearTimeout(timeout);
+        if (firsttime) {
+          func.call(this, arguments)
+        }
+        timeout = setTimeout(() => {
+          timeout = null
+        }, wait);
+      };
+    };
+    function debounces(func, wait) {
+      time = null
+      return function () {
+        if (!time) {
+          func.apply(this, arguments)
+        }
+        clearTimeout(time)
+        time = setTimeout(() => {
+          time = null
+        }, wait)
+      }
+    }
+    function throttle(func, wait) {
+      let start = +new Date()
+      return function () {
+        let end = +new Date()
+        console.log(end - start);
+        if (end - start >= wait) {
+          func.apply(this, arguments)
+          start = end
+        }
+      }
+    }
+    // 实际想绑定在 scroll 事件上的 handler
+    function realFunc(e) {
+      console.log(this);
+    }
+
+    // 采用了防抖动
+    btn.addEventListener('click', debounces(realFunc, 1000));
+  </script>
+  <!-- box 拖动-->
+  <!-- <script>
+      // 获取元素
+      let box = document.querySelector('.pink-box')
+      let tag = 0
+      let boxStartX = 0 
+      let boxStartY = 0 
+      let mouseY = 0 
+      let mouseX = 0 
+      let X = 0  // 移动距离
+      let Y = 0 
+      // 获取box的初始坐标
+        // 1. 绑定点击事件，鼠标按下，设置tag看是否按下，按下后获取鼠标，box的初始坐标
+      box.addEventListener('mousedown', (e)=> {
+        tag = 1
+        mouseX = e.pageX 
+        mouseY = e.pageY
+        boxStartX = box.offsetLeft
+        boxStartY = box.offsetTop
+        console.log(mouseX,mouseY,boxStartX,boxStartY);
+      })
+        // 2. 鼠标按下后移动，计算移动的距离 x = pageX - X , y = pageY - Y
+      box.addEventListener('mousemove',(e)=>{
+        if(tag == 1) {
+          X = e.pageX - mouseX
+          Y = e.pageY - mouseY
+          box.style.top = boxStartY + Y + 'px'
+          box.style.left = boxStartX + X + 'px'
+        }
+      })
+      box.addEventListener('mouseup',(e)=> {
+        tag = 0
+      })
+        // 3. box跟着移动， 移动位置 left: 初始x + x - 50 + 'px'; top =  初始y + y - 50 + 'px';
+    </script>
+    -->
+</body>
+
+</html>

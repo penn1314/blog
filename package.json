@@ -1,0 +1,39 @@
+{
+  "name": "demo_first",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "axios": "^0.26.0",
+    "body-parser": "^1.19.2",
+    "core-js": "^3.6.5",
+    "dayjs": "^1.10.7",
+    "editor.md": "^1.5.0",
+    "element-ui": "^2.15.6",
+    "express": "^4.17.3",
+    "express-jwt": "^6.1.1",
+    "highlight.js": "^9.10.0",
+    "jquery": "^3.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.4",
+    "marked": "^4.0.12",
+    "mavon-editor": "^2.10.4",
+    "mitt": "^3.0.0",
+    "mysql": "^2.18.1",
+    "showdown": "^2.0.0",
+    "vue": "^2.6.11",
+    "vue-router": "^3.5.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "less": "^3.0.4",
+    "less-loader": "^5.0.0",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "_id": "demo_first@0.1.0",
+  "readme": "ERROR: No README data found!"
+}
