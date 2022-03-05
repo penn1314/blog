@@ -12,24 +12,22 @@
         <el-tag type="success" size="mini" v-for="(item, index) in article.tag" :key="index">{{ item }}</el-tag>
       </span>
     </div>
-    <div class="article_detail_content" v-html="compiledMarkdown()"></div>
+    <template>
+      <mavon-editor class="md" ref="edit" :value="article.content" :subfield="false" :defaultOpen="'preview'" :toolbarsFlag="false" :editable="true" :scrollStyle="true" :ishljs="true" :navigation="true"> </mavon-editor>
+    </template>
   </div>
 </template>
 
 <script>
 // markdonw转html
-import _ from 'lodash'
-import { marked } from 'marked'
-import hightlight from 'highlight.js'
-import '../../assets/atom-one-light.css'
-marked.setOptions({
-  highlight: function (code) {
-    return hightlight.highlightAuto(code).value
-  },
-})
+import { mavonEditor } from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
 export default {
   name: 'BlogDetail',
+  components: {
+    mavonEditor,
+  },
   data() {
     return {
       article: {},
@@ -39,11 +37,9 @@ export default {
   created() {
     this.getBlog()
   },
+
   methods: {
     // markdown转html
-    compiledMarkdown: function () {
-      return marked.parse(this.article.content)
-    },
     // 返回上一次的记录
     gotoBack() {
       this.$router.back()
@@ -91,7 +87,6 @@ export default {
   padding: 0;
   overflow: hidden;
   width: 70%;
-  height: 600px;
   margin: 10px auto;
   background-color: #fff;
   border-radius: 5px;
@@ -102,5 +97,14 @@ export default {
 }
 .el-tag {
   margin-left: 5px;
+}
+.md {
+  margin-top: 10px;
+}
+.markdown-it-wrap {
+  width: 1140px;
+  margin: 0 auto;
+  padding-right: 165px;
+  box-sizing: border-box;
 }
 </style>
