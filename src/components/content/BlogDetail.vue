@@ -1,20 +1,24 @@
 <template>
   <div class="detail-container">
-    <!--返回按钮-->
-    <div><el-button class="btn-back" type="info" round size="small" @click="gotoBack">返回</el-button></div>
-    <div class="article_title">{{ article.title }}</div>
-    <!--文章信息-->
-    <div class="article_info">
-      <span class="article_author">作者：{{ article.author }}&nbsp; </span>
-      <span class="article_info_date">发表于：{{ article.publishdate }}&nbsp;</span>
-      <span class="article_info_label"
-        >标签: &nbsp;
-        <el-tag type="success" size="mini" v-for="(item, index) in article.tag" :key="index">{{ item }}</el-tag>
-      </span>
-    </div>
-    <template>
-      <mavon-editor class="md" ref="edit" :value="article.content" :subfield="false" :defaultOpen="'preview'" :toolbarsFlag="false" :editable="true" :scrollStyle="true" :ishljs="true" :navigation="true"> </mavon-editor>
-    </template>
+    <el-col :span="6"><div class="none"></div></el-col>
+    <el-col :span="17">
+      <!--返回按钮-->
+      <div><el-button class="btn-back" type="info" round size="small" @click="gotoBack">返回</el-button></div>
+      <div class="article_title">{{ article.title }}</div>
+      <!--文章信息-->
+      <div class="article_info">
+        <span class="article_author">作者：{{ article.author }}&nbsp; </span>
+        <span class="article_info_date">发表于：{{ article.publishdate }}&nbsp;</span>
+        <span class="article_info_label"
+          >标签: &nbsp;
+          <el-tag type="success" size="mini" v-for="(item, index) in article.tag" :key="index">{{ item }}</el-tag>
+        </span>
+      </div>
+      <template>
+        <mavon-editor class="md" ref="edit" id="markDown" :value="article.content" :subfield="false" :defaultOpen="'preview'" :toolbarsFlag="false" :editable="true" :scrollStyle="true" :ishljs="true" :navigation="true"> </mavon-editor>
+      </template>
+    </el-col>
+    <el-backtop></el-backtop>
   </div>
 </template>
 
@@ -31,13 +35,16 @@ export default {
   data() {
     return {
       article: {},
+      aData: [],
     }
   },
   props: ['id'],
   created() {
     this.getBlog()
   },
-
+  updated() {
+    this.addUrl()
+  },
   methods: {
     // markdown转html
     // 返回上一次的记录
@@ -57,6 +64,17 @@ export default {
         let tag = []
         this.article.tag = this.article.tag.split(',')
       }
+    },
+    // 给目录添加锚点
+    addUrl() {
+      this.$nextTick(function () {
+        let aData = document.querySelectorAll('.v-note-navigation-content  a')
+        aData.forEach((item) => {
+          item.parentNode.addEventListener('click', () => {
+            document.getElementById(item.id).scrollIntoView()
+          })
+        })
+      })
     },
   },
 }
@@ -86,7 +104,6 @@ export default {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  width: 70%;
   margin: 10px auto;
   background-color: #fff;
   border-radius: 5px;
@@ -106,5 +123,23 @@ export default {
   margin: 0 auto;
   padding-right: 165px;
   box-sizing: border-box;
+}
+.none {
+  visibility: hidden;
+  width: 100px;
+  height: 100px;
+}
+/deep/ .v-note-navigation-wrapper {
+  position: absolute !important;
+  top: 0 !important;
+  left: -250px !important;
+  z-index: 99999 !important;
+}
+
+/deep/ .v-note-panel {
+  overflow: unset !important;
+}
+.el-backtop {
+  z-index: 99999;
 }
 </style>

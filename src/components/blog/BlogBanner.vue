@@ -14,6 +14,8 @@ export default {
 
 <style scoped>
 .banner-container {
+  background: url('../../assets/images/banner.gif') no-repeat center;
+  background-size: contain;
   position: relative;
   width: 100%;
   height: 300px;
