@@ -1,10 +1,11 @@
 <template>
-  <div class="sort-container">
+  <div class="sort-container" v-loading="loading">
     <!-- 列表框架 -->
     <el-card class="box-card">
       <!-- 第一行头部 -->
       <div slot="header" class="clearfix">
         <span>文章管理</span>
+        <Search class="search" @getSearchResult="getSearchResult"></Search>
       </div>
       <!-- 列表标题、数据 -->
       <el-table :data="currentPage" stripe style="width: 100%">
@@ -38,7 +39,14 @@
         </el-table-column>
       </el-table>
       <div class="block">
-        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="10" layout="total, prev, pager, next" :total="total"> </el-pagination>
+        <el-pagination
+          background
+          @current-change="handleCurrentChange"
+          :page-size="10"
+          layout="total, prev, pager, next"
+          :total="total"
+        >
+        </el-pagination>
       </div>
     </el-card>
     <!-- 对话框，title值为添加分类时，显示添加的对话框，更新则出现更新的对话框 -->
@@ -52,7 +60,12 @@
           <!-- 文章分类 -->
           <el-form-item label="文章分类">
             <el-select v-model="updateBlog.sort" placeholder="请选择文章分类">
-              <el-option v-for="item in sortList" :label="updateBlog.name" :value="item.name" :key="item.id"></el-option>
+              <el-option
+                v-for="item in sortList"
+                :label="updateBlog.name"
+                :value="item.name"
+                :key="item.id"
+              ></el-option>
             </el-select>
           </el-form-item>
           <!-- 文章标签 -->
@@ -62,20 +75,39 @@
           <!-- 文章发布时间、作者 -->
           <el-form-item label="发布信息">
             <el-col :span="4">
-              <el-date-picker type="date" placeholder="选择日期" v-model="updateBlog.publishdate" style="width: 100%"></el-date-picker>
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="updateBlog.publishdate"
+                style="width: 100%"
+              ></el-date-picker>
             </el-col>
             <el-col class="line" :span="1">---</el-col>
             <el-col :span="5">
-              <el-input placeholder="作者" style="width: 100%" v-model="updateBlog.author"></el-input>
+              <el-input
+                placeholder="作者"
+                style="width: 100%"
+                v-model="updateBlog.author"
+              ></el-input>
             </el-col>
           </el-form-item>
           <!-- 文章简述 -->
           <el-form-item label="文章简述">
-            <el-input type="textarea" style="width: 40%" autosize v-model="updateBlog.abstract"></el-input>
+            <el-input
+              type="textarea"
+              style="width: 40%"
+              autosize
+              v-model="updateBlog.abstract"
+            ></el-input>
           </el-form-item>
           <!-- 文章内容 -->
           <!-- 编辑器 -->
-          <mavon-editor v-model="updateBlog.content" ref="md" @change="change" style="min-height: 600px" />
+          <mavon-editor
+            v-model="updateBlog.content"
+            ref="md"
+            @change="change"
+            style="min-height: 600px"
+          />
           <el-form-item>
             <el-button class="submit" type="primary" @click="submit">确认修改</el-button>
             <el-button @click="dialogVisible = false">取 消</el-button>
@@ -87,6 +119,7 @@
 </template>
 
 <script>
+import Search from '@/components/search/Search.vue'
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import dayjs from 'dayjs'
@@ -94,6 +127,7 @@ export default {
   name: 'Sort',
   components: {
     mavonEditor,
+    Search
   },
 
   created() {
@@ -116,18 +150,23 @@ export default {
       currentPage: [],
       // 文章总条数
       total: 0,
+      search: 0,
+      loading: false
     }
   },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
     async handleCurrentChange(val) {
+      if (this.search === 1) {
+        this.currentPage = this.blogList.slice((val - 1) * 10, val * 10)
+        this.total = this.blogList.length
+        return
+      }
       // 1 ---> 显示1-10条
       // 如果文章列表的长度少于当前页数*10 那么就请求数据 （当前页 - 1） * 10 到 当前页 * 10 条数据
       if (this.blogList.length < val * 10) {
-        console.log(1)
-        const { data: res } = await this.$http.get('/blog/getblogs', { params: { start: (val - 1) * 10 - 1 } })
+        const { data: res } = await this.$http.get('/blog/getblogs', {
+          params: { start: (val - 1) * 10 }
+        })
         if (res.status === 0) {
           // 将数据传入当前页数据
 
@@ -158,7 +197,8 @@ export default {
       if (res.status === 0) {
         this.$message.success('删除成功')
         // 删除后台数据，删除前端数据
-        this.blogList = this.blogList.filter((item) => item.id !== id)
+        this.currentPage = this.currentPage.filter((item) => item.id !== id)
+        this.total--
       } else {
         this.$message.error('删除失败')
       }
@@ -174,9 +214,11 @@ export default {
     },
     // 获取博客列表
     async getBlogList(start) {
+      this.loading = true
       const { data: res } = await this.$http.get('/blog/getblogs', { params: { start } })
-      if (res.status !== 0) return console.log('获取数据失败')
+      if (res.status !== 0) return (this.loading = false)
       else {
+        this.loading = false
         this.blogList = res.data
         this.currentPage = res.data
       }
@@ -213,7 +255,14 @@ export default {
         this.total = res.count
       }
     },
-  },
+    // 接受search的数据
+    getSearchResult(data) {
+      this.blogList = JSON.parse(JSON.stringify(data))
+      this.total = JSON.parse(JSON.stringify(data)).length
+      this.currentPage = this.blogList.slice(0, 10)
+      this.search = 1
+    }
+  }
 }
 </script>
 
@@ -255,5 +304,13 @@ export default {
   left: 50%;
   transform: translate(-25%);
   margin: 10px auto;
+}
+/deep/ .clearfix {
+  position: relative;
+}
+.search {
+  position: absolute;
+  top: -10px;
+  right: 0;
 }
 </style>

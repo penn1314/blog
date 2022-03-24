@@ -92,7 +92,7 @@ a {
   box-sizing: content-box;
   width: 100%;
   height: 60px;
-  background-color: #545c64;
+  background-color: rgba(84, 92, 100);
 }
 /deep/ .el-menu-demo {
   float: right;
@@ -110,5 +110,8 @@ a {
 }
 .user-img {
   float: right;
+}
+/deep/ .el-menu.el-menu--horizontal {
+  border-bottom: 0;
 }
 </style>

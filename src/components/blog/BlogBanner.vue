@@ -12,13 +12,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .banner-container {
-  background: url('../../assets/images/banner.gif') no-repeat center;
-  background-size: contain;
+  background: url('../../assets/images/bg1.jpg') no-repeat center;
+  background-size: cover;
   position: relative;
   width: 100%;
-  height: 300px;
+  height: 400px;
   background-color: #545c64;
 }
 .banner-content {

@@ -12,7 +12,7 @@ import ArticleEdit from '@/components/manege/ArticleEdit.vue'
 import AritcleUpdate from '@/components/manege/AriticleUpdate.vue'
 import Sort from '@/components/manege/Sort.vue'
 import axios from 'axios'
-axios.defaults.baseURL = 'http://127.0.0.1:3001'
+axios.defaults.baseURL = 'http://pennspace.top:3001'
 
 // 将vueRouter作为Vue的插件
 Vue.use(vueRouter)
@@ -34,10 +34,10 @@ const router = new vueRouter({
         { path: 'index', component: ManegeIndex },
         { path: 'sort', component: Sort },
         { path: 'edit', component: ArticleEdit },
-        { path: 'update', component: AritcleUpdate },
-      ],
-    },
-  ],
+        { path: 'update', component: AritcleUpdate }
+      ]
+    }
+  ]
 })
 
 //设置全局前置守卫
@@ -53,7 +53,7 @@ router.beforeEach(async (to, from, next) => {
       // 如果存在，发送请求判断token是否过期
       const { data: res } = await axios
         .get('/check', {
-          headers: { Authorization: 'Bearer ' + token },
+          headers: { Authorization: 'Bearer ' + token }
         })
         .catch((err) => {
           // 出现错误则，证明token过期，返回登录页面

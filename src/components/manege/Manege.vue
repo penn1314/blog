@@ -2,7 +2,13 @@
   <div class="manege-container">
     <el-row class="tac">
       <el-col class="col" :span="4">
-        <el-menu default-active="1" class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+        <el-menu
+          default-active="1"
+          class="el-menu-vertical-demo"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+        >
           <el-menu-item index="1" @click="goto('/manege/index')">
             <i class="el-icon-menu"></i>
             <span slot="title">首页</span>
@@ -15,15 +21,6 @@
             <el-menu-item index="2-1" @click="goto('/manege/sort')">文章分类</el-menu-item>
             <el-menu-item index="2-2" @click="goto('/manege/update')">文章修改</el-menu-item>
             <el-menu-item index="2-3" @click="goto('/manege/edit')">文章发布</el-menu-item>
-          </el-submenu>
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>个人中心</span>
-            </template>
-            <el-menu-item index="3-1">基本资料</el-menu-item>
-            <el-menu-item index="3-2">更换头像</el-menu-item>
-            <el-menu-item index="3-3">重置密码</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -45,8 +42,8 @@ export default {
   methods: {
     goto(val) {
       this.$router.push(val)
-    },
-  },
+    }
+  }
 }
 </script>
 

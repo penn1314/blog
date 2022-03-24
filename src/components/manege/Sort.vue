@@ -1,11 +1,13 @@
 <template>
-  <div class="sort-container">
+  <div class="sort-container" v-loading="loading">
     <!-- 列表框架 -->
     <el-card class="box-card">
       <!-- 第一行头部 -->
       <div slot="header" class="clearfix">
         <span>分类管理</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="addsort_btn">添加分类</el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" @click="addsort_btn"
+          >添加分类</el-button
+        >
       </div>
       <!-- 列表标题、数据 -->
       <el-table :data="sortList" stripe style="width: 100%">
@@ -33,13 +35,20 @@
     <el-dialog :title="title" :visible.sync="dialogVisible" width="30%">
       <div class="demo-input-suffix">
         分类名称：
-        <el-input placeholder="请分类名称" v-model.trim="sortInfo.name" v-if="title === '添加分类'"> </el-input>
+        <el-input placeholder="请分类名称" v-model.trim="sortInfo.name" v-if="title === '添加分类'">
+        </el-input>
         <el-input :value="updateInfo.name" v-model.trim="updateInfo.name" v-else></el-input>
       </div>
       <div class="demo-input-suffix">
         分类别名：
-        <el-input placeholder="请分类别名" v-model.trim="sortInfo.nickname" v-if="title === '添加分类'"> </el-input>
-        <el-input :value="updateInfo.nickname" v-model.trim="updateInfo.nickname" v-else> </el-input>
+        <el-input
+          placeholder="请分类别名"
+          v-model.trim="sortInfo.nickname"
+          v-if="title === '添加分类'"
+        >
+        </el-input>
+        <el-input :value="updateInfo.nickname" v-model.trim="updateInfo.nickname" v-else>
+        </el-input>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -59,15 +68,16 @@ export default {
   },
   data() {
     return {
+      loading: false,
       title: '添加分类',
       sortInfo: {
         id: 0,
         name: '',
-        nickname: '',
+        nickname: ''
       },
       updateInfo: {},
       sortList: [],
-      dialogVisible: false,
+      dialogVisible: false
     }
   },
   methods: {
@@ -80,7 +90,11 @@ export default {
         const { data: res } = await this.$http.post('/addsort', this.sortInfo)
         if (res.status === 0) {
           // 添加成功后，将数据插入sortInfo
-          this.sortList.push({ id: this.sortInfo.id, name: this.sortInfo.name, nickname: this.sortInfo.nickname })
+          this.sortList.push({
+            id: this.sortInfo.id,
+            name: this.sortInfo.name,
+            nickname: this.sortInfo.nickname
+          })
           this.sortInfo.id++
           this.$message.success('添加成功')
         } else {
@@ -94,11 +108,14 @@ export default {
       if (this.updateInfo.name === '' || this.updateInfo.nickname === '') {
         this.$message.error('内容不能为空')
       } else {
+        this.loading = true
         const { data: res } = await this.$http.post('/updatesort', this.updateInfo)
         if (res.status === 0) {
+          this.loading = false
           this.sortInfo.id++
           this.$message.success('更新成功')
         } else {
+          this.loading = false
           this.$message.error('更新失败')
         }
       }
@@ -110,8 +127,10 @@ export default {
     },
     // 删除分类函数
     async goDelete(id) {
+      this.loading = true
       const { data: res } = await this.$http.post('/delete', { table: 't_sort', id })
       if (res.status === 0) {
+        this.loading = false
         this.sortInfo.id++
         this.$message.success('删除成功')
         // 删除后台数据，删除前端数据
@@ -122,8 +141,10 @@ export default {
     },
     // 获取分类列表
     async getSort() {
+      this.loading = true
       const { data: res } = await this.$http.get('/getsort')
       if (res.status === 0) {
+        this.loading = false
         this.sortList = res.data
       } else {
         this.$message.error('获取列表失败')
@@ -142,8 +163,8 @@ export default {
     addsort_btn() {
       this.dialogVisible = true
       this.title = '添加分类'
-    },
-  },
+    }
+  }
 }
 </script>
 

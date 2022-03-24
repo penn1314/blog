@@ -13,7 +13,7 @@ import MarkdownItToc from 'vue-markdown-it-toc'
 Vue.use(MarkdownItToc)
 
 // 添加默认服务器地址
-axios.defaults.baseURL = 'http://127.0.0.1:3001'
+axios.defaults.baseURL = 'http://pennspace.top:3001'
 // 设置拦截器，添加token
 
 axios.interceptors.request.use((config) => {
@@ -33,5 +33,5 @@ Vue.config.productionTip = false
 Vue.component('TopNav', TopNav)
 new Vue({
   render: (h) => h(App),
-  router,
+  router
 }).$mount('#app')

@@ -1,9 +1,9 @@
 <template>
-  <div class="detail-container">
+  <div class="detail-container" v-loading.fullscreen.lock="fullscreenLoading">
     <el-col :span="6"><div class="none"></div></el-col>
     <el-col :span="17">
       <!--返回按钮-->
-      <div><el-button class="btn-back" type="info" round size="small" @click="gotoBack">返回</el-button></div>
+      <el-button class="btn-back" type="info" round size="small" @click="gotoBack">返回</el-button>
       <div class="article_title">{{ article.title }}</div>
       <!--文章信息-->
       <div class="article_info">
@@ -11,11 +11,26 @@
         <span class="article_info_date">发表于：{{ article.publishdate }}&nbsp;</span>
         <span class="article_info_label"
           >标签: &nbsp;
-          <el-tag type="success" size="mini" v-for="(item, index) in article.tag" :key="index">{{ item }}</el-tag>
+          <el-tag type="success" size="mini" v-for="(item, index) in article.tag" :key="index">{{
+            item
+          }}</el-tag>
         </span>
       </div>
       <template>
-        <mavon-editor class="md" ref="edit" id="markDown" :value="article.content" :subfield="false" :defaultOpen="'preview'" :toolbarsFlag="false" :editable="true" :scrollStyle="true" :ishljs="true" :navigation="true"> </mavon-editor>
+        <mavon-editor
+          class="md"
+          ref="edit"
+          id="markDown"
+          :value="article.content"
+          :subfield="false"
+          :defaultOpen="'preview'"
+          :toolbarsFlag="false"
+          :editable="true"
+          :scrollStyle="true"
+          :ishljs="true"
+          :navigation="true"
+        >
+        </mavon-editor>
       </template>
     </el-col>
     <el-backtop></el-backtop>
@@ -30,12 +45,13 @@ import 'mavon-editor/dist/css/index.css'
 export default {
   name: 'BlogDetail',
   components: {
-    mavonEditor,
+    mavonEditor
   },
   data() {
     return {
       article: {},
       aData: [],
+      fullscreenLoading: false
     }
   },
   props: ['id'],
@@ -53,13 +69,15 @@ export default {
     },
     // 获取博客
     async getBlog() {
+      this.fullscreenLoading = true
       const { data: res } = await this.$http.get('blog/getblog', {
         params: {
-          id: this.id,
-        },
+          id: this.id
+        }
       })
       if (res.status !== 0) return
       else {
+        this.fullscreenLoading = false
         this.article = res.data[0]
         let tag = []
         this.article.tag = this.article.tag.split(',')
@@ -71,12 +89,14 @@ export default {
         let aData = document.querySelectorAll('.v-note-navigation-content  a')
         aData.forEach((item) => {
           item.parentNode.addEventListener('click', () => {
-            document.getElementById(item.id).scrollIntoView()
+            document.getElementById(item.id).scrollIntoView({
+              behavior: 'smooth' // 平滑过渡
+            })
           })
         })
       })
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -101,6 +121,7 @@ export default {
   padding: 0 20px;
 }
 .detail-container {
+  position: relative;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -109,7 +130,11 @@ export default {
   border-radius: 5px;
   box-shadow: 0px 0px 5px 2px #ccc;
 }
+
 .btn-back {
+  position: absolute;
+  top: 0;
+  left: 0;
   margin: 5px 0 0 5px;
 }
 .el-tag {

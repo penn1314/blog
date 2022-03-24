@@ -1,10 +1,12 @@
 <template>
-  <h1>Comment</h1>
+  <div class="comment-container">
+    <h1>留言模块待开发</h1>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Comment',
+  name: 'Comment'
 }
 </script>
 

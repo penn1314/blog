@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="login-container" v-loading="loading">
     <a class="logo" href="javascript:;" @click="goHome"></a>
     <!-- 登录注册区域 -->
     <div class="loginAndRegBox">
@@ -19,8 +19,17 @@
           <el-button class="center" type="primary" v-else @click="goto">登录</el-button>
         </el-form-item>
       </el-form>
-      <el-link class="login" target="_blank" :underline="false" v-if="isreg" @click.prevent="goLogin">去登录</el-link>
-      <el-link class="login" target="_blank" :underline="false" v-else @click.prevent="goRegister">去注册</el-link>
+      <el-link
+        class="login"
+        target="_blank"
+        :underline="false"
+        v-if="isreg"
+        @click.prevent="goLogin"
+        >去登录</el-link
+      >
+      <el-link class="login" target="_blank" :underline="false" v-else @click.prevent="goRegister"
+        >去注册</el-link
+      >
     </div>
   </div>
 </template>
@@ -35,12 +44,13 @@ export default {
       isreg: false,
       info: {
         username: '',
-        password: '',
+        password: ''
       },
       rules: {
         username: [{ required: true, message: '内容不能为空', trigger: 'blur' }],
-        password: [{ required: true, message: '内容不能为空', trigger: 'blur' }],
+        password: [{ required: true, message: '内容不能为空', trigger: 'blur' }]
       },
+      loading: false
     }
   },
   methods: {
@@ -58,7 +68,10 @@ export default {
       this.$refs['form'].validate(async (value) => {
         if (value) {
           // 表单验证通过，则发起登录请求
-          const { data: res } = await this.$http.post('/tologin', { username: this.info.username, password: this.info.password })
+          const { data: res } = await this.$http.post('/tologin', {
+            username: this.info.username,
+            password: this.info.password
+          })
           // 验证登录成功，保存token，并跳转到登录页
           if (res.status === 0) {
             localStorage.setItem('token', res.token)
@@ -70,8 +83,8 @@ export default {
           }
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

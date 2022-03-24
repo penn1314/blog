@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-container">
+  <div class="edit-container" v-loading="loading">
     <el-card class="box-card">
       <!-- 第一行头部 -->
       <div slot="header" class="clearfix">
@@ -13,7 +13,12 @@
         <!-- 文章分类 -->
         <el-form-item label="文章分类">
           <el-select v-model="blogDate.sort" placeholder="请选择文章分类">
-            <el-option v-for="item in sortList" :label="item.name" :value="item.name" :key="item.id"></el-option>
+            <el-option
+              v-for="item in sortList"
+              :label="item.name"
+              :value="item.name"
+              :key="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <!-- 文章标签 -->
@@ -23,7 +28,12 @@
         <!-- 文章发布时间、作者 -->
         <el-form-item label="发布信息">
           <el-col :span="4">
-            <el-date-picker type="date" placeholder="选择日期" v-model="blogDate.publishdate" style="width: 100%"></el-date-picker>
+            <el-date-picker
+              type="date"
+              placeholder="选择日期"
+              v-model="blogDate.publishdate"
+              style="width: 100%"
+            ></el-date-picker>
           </el-col>
           <el-col class="line" :span="1">---</el-col>
           <el-col :span="5">
@@ -32,11 +42,22 @@
         </el-form-item>
         <!-- 文章简述 -->
         <el-form-item label="文章简述">
-          <el-input type="textarea" style="width: 40%" autosize v-model="blogDate.abstract"></el-input>
+          <el-input
+            type="textarea"
+            style="width: 40%"
+            autosize
+            v-model="blogDate.abstract"
+          ></el-input>
         </el-form-item>
         <!-- 文章内容 -->
         <!-- 编辑器 -->
-        <mavon-editor v-model="blogDate.content" ref="md" @change="change" style="min-height: 600px" />
+        <mavon-editor
+          v-model="blogDate.content"
+          ref="md"
+          :ishljs="true"
+          @change="change"
+          style="min-height: 600px"
+        />
         <el-form-item>
           <el-button class="submit" type="primary" @click="submit">立即发布</el-button>
         </el-form-item>
@@ -53,7 +74,7 @@ import dayjs from 'dayjs'
 
 export default {
   components: {
-    mavonEditor,
+    mavonEditor
   },
   data() {
     return {
@@ -69,8 +90,9 @@ export default {
         tag: '',
         sort: '',
         abstract: '',
-        content: '',
+        content: ''
       },
+      loading: false
     }
   },
   created() {
@@ -117,12 +139,12 @@ export default {
         this.blogDate.publishdate = dayjs(this.blogDate.publishdate).format('YYYY-MM-DD')
         const { data: res } = await this.$http.post('/addblog', this.blogDate)
         if (res.status === 0) {
-          this.$message.success('添加成功')
+          this.$message.success('发布成功')
           this.blogDate.id++
-        } else this.$message.error('添加失败')
+        } else this.$message.error('发布失败')
       } else this.$message.error('内容不能为空')
-    },
-  },
+    }
+  }
 }
 </script>
 
